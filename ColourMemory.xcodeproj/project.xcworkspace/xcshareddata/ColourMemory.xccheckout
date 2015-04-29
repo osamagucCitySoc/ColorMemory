@@ -10,29 +10,29 @@
 	<string>ColourMemory</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>B96D2FB5-81F4-49D4-BD6C-6C6019C1CC9D</key>
+		<key>F6F3DE61A65862C0C7C05ED848AE05A162D2C5F1</key>
 		<string>https://github.com/osamagucCitySoc/ColourMemory</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>ColourMemory.xcodeproj/project.xcworkspace</string>
+	<string>ColourMemory.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>B96D2FB5-81F4-49D4-BD6C-6C6019C1CC9D</key>
+		<key>F6F3DE61A65862C0C7C05ED848AE05A162D2C5F1</key>
 		<string>../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/osamagucCitySoc/ColourMemory</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>B96D2FB5-81F4-49D4-BD6C-6C6019C1CC9D</string>
+	<string>F6F3DE61A65862C0C7C05ED848AE05A162D2C5F1</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>B96D2FB5-81F4-49D4-BD6C-6C6019C1CC9D</string>
+			<string>F6F3DE61A65862C0C7C05ED848AE05A162D2C5F1</string>
 			<key>IDESourceControlWCCName</key>
 			<string>ColourMemory</string>
 		</dict>

@@ -9,12 +9,22 @@
 #import "GameBoardViewController.h"
 #import "DatabaseController.h"
 #import "CONSTANTS.h"
-@interface GameBoardViewController ()
+#import <GoogleMobileAds/GoogleMobileAds.h>
+#import <AVFoundation/AVFoundation.h>
+#import "MKInputBoxView.h"
+
+@interface GameBoardViewController ()<GADInterstitialDelegate>
+
+@property(nonatomic, strong) GADInterstitial *interstitial;
+@property (nonatomic, retain) AVAudioPlayer *myAudioPlayer;
+@property (nonatomic, retain) AVAudioPlayer *myAudioPlayer2;
 
 @end
 
 @implementation GameBoardViewController
 {
+    NSTimer *t;
+    
     /**
      Those arrays to be used in randomly filling the board.
      The algorthim written by me is a modified concept of the "index sort" algorithm.
@@ -33,13 +43,13 @@
      Those are to hold and show the score.
      **/
     UILabel * scoreLabel;
-    int score;
+    float score;
     int matchedAlready;
-    
+    BOOL countTime;
     DatabaseController* db; // to be used as interface to database operations.
     
     
- 
+    
 }
 
 #define DEGREES_TO_RADIANS(angle) (angle / 180.0 * M_PI)
@@ -57,21 +67,99 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    NSString *soundFilePath = [[NSBundle mainBundle] pathForResource:@"bg" ofType: @"mp3"];
+    NSURL *fileURL = [[NSURL alloc] initFileURLWithPath:soundFilePath ];
+    self.myAudioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
+    self.myAudioPlayer.numberOfLoops = -1; //infinite loop
+    
+    countTime = NO;
+    
     if ([self respondsToSelector:@selector(setEdgesForExtendedLayout:)]) {
         self.edgesForExtendedLayout = UIRectEdgeNone;
     }
-        
+    
     [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind: UICollectionElementKindSectionHeader withReuseIdentifier:@"headerSection"];
-
+    
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(storeScore:)
                                                  name:@FINISHED_USERNAME_NOTIFICATION_NAME
                                                object:nil];
     
     db = [[DatabaseController alloc]init];
+    
+    [self initTheGame];
+    
+    [self.collectionView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"collectionViewBG.png"]]];
+    
+    
+    MKInputBoxView *inputBoxView = [MKInputBoxView boxOfType:LoginAndPasswordInput];
+    [inputBoxView setBlurEffectStyle:UIBlurEffectStyleLight];
+    NSString* title = @"";
+    NSString* message = @"";
+    if(score <= 30)
+    {
+        title = @"مبرووووووك !!!";
+        message = @"أكتب حسابك بتويتر أو بريدك الإلكتروني و إسم التطبيق الذي تريده و سيتم الإرسال خلال ٢٤ ساعة";
+        inputBoxView.customise = ^(UITextField *textField) {
+            textField.placeholder = @"بريدك أو حسابك بتويتر";
+            if (textField.secureTextEntry) {
+                textField.placeholder = @"التطبيق المراد. أقل من دولارين";
+                [textField setSecureTextEntry:NO];
+            }
+            textField.textColor = [UIColor whiteColor];
+            textField.layer.cornerRadius = 4.0f;
+            return textField;
+        };
+        inputBoxView.onSubmit = ^(NSString *value1, NSString *value2) {
+            [self submitPrize:value1 app:value2 price:@"2"];
+        };
+    }else if(score <= 60)
+    {
+        title = @"مبرووووووك !!!";
+        message = @"أكتب حسابك بتويتر أو بريدك الإلكتروني و إسم التطبيق الذي تريده و سيتم الإرسال خلال ٢٤ ساعة";
+        inputBoxView.customise = ^(UITextField *textField) {
+            textField.placeholder = @"بريدك أو حسابك بتويتر";
+            if (textField.secureTextEntry) {
+                textField.placeholder = @"التطبيق المراد. أقل من دولار";
+                [textField setSecureTextEntry:NO];
+            }
+            textField.textColor = [UIColor whiteColor];
+            textField.layer.cornerRadius = 4.0f;
+            return textField;
+        };
+        inputBoxView.onSubmit = ^(NSString *value1, NSString *value2) {
+            [self submitPrize:value1 app:value1 price:@"1"];
+        };
+    }else
+    {
+        inputBoxView.customise = ^(UITextField *textField) {
+            textField.alpha = 0;
+            return textField;
+        };
+        
+        title = @"حاول مرة أخرى :(";
+        message = @"إلعب مرة أخرى مجانا و لا تفقد الأمل !";
+    }
+    [inputBoxView setSubmitButtonText:@"تم"];
+    [inputBoxView setCancelButtonText:@"إلغاء"];
+    [inputBoxView setTitle:title];
+    [inputBoxView setMessage:message];
+    [inputBoxView show];
+}
 
-    // initializing the board
+-(void)submitPrize:(NSString*)account app:(NSString*)app price:(NSString*)price
+{
+    NSLog(@"%@",@"OSAMA");
+}
+
+-(void)initTheGame
+{
     [self randomizeTheBoard];
+    self.interstitial = [[GADInterstitial alloc] init];
+    [self.interstitial setDelegate:self];
+    self.interstitial.adUnitID = @"ca-app-pub-2433238124854818/7215102799";
+    GADRequest *request = [GADRequest request];
+    [self.interstitial loadRequest:request];
 }
 
 - (BOOL)shouldAutorotate {
@@ -135,13 +223,14 @@
         }
     }
     [self.collectionView reloadData];
+    
 }
 /**
  This method is for updating the score label whenver needed.
  **/
 -(void)updateScoreLabel
 {
-    [scoreLabel setText:[NSString stringWithFormat:@"%@ : %i",@"Your Score Is",score]];
+    [scoreLabel setText:[NSString stringWithFormat:@"%@ : %0.2f s",@"Your Time Is",score]];
     [scoreLabel setNeedsDisplay];
 }
 
@@ -216,7 +305,7 @@
     CGAffineTransformMakeRotation(DEGREES_TO_RADIANS(0));
     lockView.transform = transform;
     [UIView commitAnimations];
-
+    
 }
 
 - (NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView
@@ -248,20 +337,31 @@
     UICollectionViewCell* cell = [self.collectionView cellForItemAtIndexPath:indexPath];
     UIImageView* imageView = (UIImageView*)[cell viewWithTag:1];
     
+    if(self.myAudioPlayer2)
+    {
+        [self.myAudioPlayer2 stop];
+    }
+    
+    NSString *soundFilePath = [[NSBundle mainBundle] pathForResource:@"button-09" ofType: @"mp3"];
+    NSURL *fileURL = [[NSURL alloc] initFileURLWithPath:soundFilePath ];
+    self.myAudioPlayer2 = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
+    self.myAudioPlayer2.numberOfLoops = 0; //infinite loop
+    [self.myAudioPlayer2 play];
+    
     if(firstOpenedCard != nil)
     {
         if(firstOpenedCard == indexPath) // close opened card
         {
             firstOpenedCard = nil;
             [UIView transitionWithView:imageView
-                              duration:0.4
+                              duration:0.2
                                options:UIViewAnimationOptionTransitionFlipFromRight
                             animations:^{
                                 imageView.image = [UIImage imageNamed:@"card_bg.png"];
                             } completion:^(BOOL finished) {
                                 [self stopAnimation:cell];
                             }];
-
+            
             return;
         }
     }
@@ -273,7 +373,7 @@
         {
             secondOpenedCard = nil;
             [UIView transitionWithView:imageView
-                              duration:0.4
+                              duration:0.2
                                options:UIViewAnimationOptionTransitionFlipFromRight
                             animations:^{
                                 imageView.image = [UIImage imageNamed:@"card_bg.png"];
@@ -289,7 +389,7 @@
     {//first to open a card
         firstOpenedCard = indexPath;
         [UIView transitionWithView:imageView
-                          duration:0.4
+                          duration:0.2
                            options:UIViewAnimationOptionTransitionFlipFromRight
                         animations:^{
                             imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@%@%@",@"colour",[randomFilledArray objectAtIndex:indexPath.row],@".png"]];
@@ -304,7 +404,7 @@
         [self.collectionView setUserInteractionEnabled:NO];
         secondOpenedCard = indexPath;
         [UIView transitionWithView:imageView
-                          duration:0.4
+                          duration:0.2
                            options:UIViewAnimationOptionTransitionFlipFromRight
                         animations:^{
                             imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@%@%@",@"colour",[randomFilledArray objectAtIndex:indexPath.row],@".png"]];
@@ -313,14 +413,11 @@
                             // need to check for a match and act accordingly
                             if([[randomFilledArray objectAtIndex:firstOpenedCard.row]isEqualToString:[randomFilledArray objectAtIndex:secondOpenedCard.row]])
                             {
-                                score+=2;
-                                [self updateScoreLabel];
-                                [self performSelector:@selector(makeTheTwoMatchedUnClickable) withObject:nil afterDelay:0.5];
+                                [self makeTheTwoMatchedUnClickable];
+                                //                                [self performSelector:@selector(makeTheTwoMatchedUnClickable) withObject:nil afterDelay:0.5];
                             }else
                             {
-                                score--;
-                                [self updateScoreLabel];
-                                [self performSelector:@selector(unFlipTheNonMatched) withObject:nil afterDelay:0.5];
+                                [self performSelector:@selector(unFlipTheNonMatched) withObject:nil afterDelay:0.2];
                             }
                         }];
         return;
@@ -345,9 +442,59 @@
     
     if(matchedAlready >=8)
     {
-        UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@"Congraaats.." message:@"You have a solid memory. Amazing person.." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert setTag:1];
-        [alert show];
+        MKInputBoxView *inputBoxView = [MKInputBoxView boxOfType:LoginAndPasswordInput];
+        [inputBoxView setBlurEffectStyle:UIBlurEffectStyleLight];
+        NSString* title = @"";
+        NSString* message = @"";
+        if(score <= 30)
+        {
+            title = @"مبرووووووك !!!";
+            message = @"أكتب حسابك بتويتر أو بريدك الإلكتروني و إسم التطبيق الذي تريده و سيتم الإرسال خلال ٢٤ ساعة";
+            inputBoxView.customise = ^(UITextField *textField) {
+                textField.placeholder = @"بريدك أو حسابك بتويتر";
+                if (textField.secureTextEntry) {
+                    textField.placeholder = @"التطبيق المراد. أقل من دولارين";
+                    [textField setSecureTextEntry:NO];
+                }
+                textField.textColor = [UIColor whiteColor];
+                textField.layer.cornerRadius = 4.0f;
+                return textField;
+            };
+            inputBoxView.onSubmit = ^(NSString *value1, NSString *value2) {
+                [self submitPrize:value1 app:value2 price:@"2"];
+            };
+        }else if(score <= 60)
+        {
+            title = @"مبرووووووك !!!";
+            message = @"أكتب حسابك بتويتر أو بريدك الإلكتروني و إسم التطبيق الذي تريده و سيتم الإرسال خلال ٢٤ ساعة";
+            inputBoxView.customise = ^(UITextField *textField) {
+                textField.placeholder = @"بريدك أو حسابك بتويتر";
+                if (textField.secureTextEntry) {
+                    textField.placeholder = @"التطبيق المراد. أقل من دولار";
+                    [textField setSecureTextEntry:NO];
+                }
+                textField.textColor = [UIColor whiteColor];
+                textField.layer.cornerRadius = 4.0f;
+                return textField;
+            };
+            inputBoxView.onSubmit = ^(NSString *value1, NSString *value2) {
+                [self submitPrize:value1 app:value1 price:@"1"];
+            };
+        }else
+        {
+            inputBoxView.customise = ^(UITextField *textField) {
+                textField.alpha = 0;
+                return textField;
+            };
+            
+            title = @"حاول مرة أخرى :(";
+            message = @"إلعب مرة أخرى مجانا و لا تفقد الأمل !";
+        }
+        [inputBoxView setSubmitButtonText:@"تم"];
+        [inputBoxView setCancelButtonText:@"إلغاء"];
+        [inputBoxView setTitle:title];
+        [inputBoxView setMessage:message];
+        [inputBoxView show];
     }
 }
 
@@ -374,7 +521,7 @@
                     } completion:^(BOOL finished) {
                         [self stopAnimation:cell2];
                     }];
-
+    
     
     firstOpenedCard = nil;
     secondOpenedCard = nil;
@@ -388,18 +535,37 @@
         UICollectionReusableView *reusableview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionHeader withReuseIdentifier:@"headerSection" forIndexPath:indexPath];
         
         if (reusableview==nil) {
-            reusableview=[[UICollectionReusableView alloc] initWithFrame:CGRectMake(0, 0, 320, 24)];
+            reusableview=[[UICollectionReusableView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
         }
         [reusableview setBackgroundColor:[UIColor clearColor]];
         [scoreLabel removeFromSuperview];
-        scoreLabel=[[UILabel alloc] initWithFrame:CGRectMake(10, 5, 300, 15)];
+        scoreLabel=[[UILabel alloc] initWithFrame:CGRectMake(8, 30, 200, 15)];
         scoreLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:12.0f];
-        scoreLabel.textAlignment = NSTextAlignmentCenter;
+        scoreLabel.textAlignment = NSTextAlignmentLeft;
         [scoreLabel setBackgroundColor:[UIColor clearColor]];
         [scoreLabel setTextColor:[UIColor whiteColor]];
+        UIButton* button = [[UIButton alloc]initWithFrame:CGRectMake(280, 9, 32, 32)];
+        [button setImage:[UIImage imageNamed:@"Repeat-32.png"] forState:UIControlStateNormal];
+        [button addTarget:self action:@selector(resetClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self updateScoreLabel];
         [reusableview addSubview:scoreLabel];
+        [reusableview addSubview:button];
         return reusableview;
+    }else if(kind == UICollectionElementKindSectionFooter)
+    {
+        UICollectionReusableView *reusableview = [collectionView dequeueReusableSupplementaryViewOfKind:UICollectionElementKindSectionFooter withReuseIdentifier:@"footerSection" forIndexPath:indexPath];
+        
+        if (reusableview==nil) {
+            reusableview=[[UICollectionReusableView alloc] initWithFrame:CGRectMake(0, 0, 320, 50)];
+        }
+        [reusableview setBackgroundColor:[UIColor clearColor]];
+        GADBannerView* bannerView = [[GADBannerView alloc]initWithFrame:CGRectMake(0, 0, 320, 50)];
+        bannerView.adUnitID = @"ca-app-pub-2433238124854818/8971037599";
+        bannerView.rootViewController = self;
+        [bannerView loadRequest:[GADRequest request]];
+        [reusableview addSubview:bannerView];
+        return reusableview;
+        
     }
     return nil;
 }
@@ -420,6 +586,48 @@
             [self randomizeTheBoard];
         }
     }
+}
+
+
+#pragma mark gad delegate
+-(void)interstitialDidReceiveAd:(GADInterstitial *)ad
+{
+    [self.interstitial presentFromRootViewController:self];
+}
+
+-(void)interstitial:(GADInterstitial *)ad didFailToReceiveAdWithError:(GADRequestError *)error
+{
+    NSLog(@"%@",[error description]);
+}
+
+-(void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    if(t)
+    {
+        [t invalidate];
+    }
+    t = [NSTimer scheduledTimerWithTimeInterval: 0.1
+                                         target: self
+                                       selector:@selector(onTick:)
+                                       userInfo: nil repeats:YES];
+    //[self.myAudioPlayer play];
+}
+-(void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    [t invalidate];
+    [self.myAudioPlayer stop];
+}
+
+-(void)onTick:(NSTimer *)timer {
+    score += 0.1;
+    [self updateScoreLabel];
+}
+
+-(void)resetClicked:(UIButton*)sender
+{
+    [self initTheGame];
 }
 
 

@@ -10,6 +10,7 @@
 #import "DatabaseController.h"
 #import "CONSTANTS.h"
 
+
 @implementation AppDelegate
 {
     
@@ -23,6 +24,11 @@
     
     [db syncLocalWithOnlineDB];
     
+    NSString *soundFilePath = [[NSBundle mainBundle] pathForResource:@"bg" ofType: @"mp3"];
+    NSURL *fileURL = [[NSURL alloc] initFileURLWithPath:soundFilePath ];
+    self.myAudioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
+    self.myAudioPlayer.numberOfLoops = -1;
+    [self.myAudioPlayer play];
     return YES;
 }
 
@@ -36,12 +42,17 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application
 {
+    //infinite loop
+    [self.myAudioPlayer stop];
+    
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later.
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
 }
 
+
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
+    [self.myAudioPlayer play];
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
