@@ -9,6 +9,7 @@
 #import "GuideViewController.h"
 #import <QuartzCore/QuartzCore.h>
 #import <AVFoundation/AVFoundation.h>
+#import "JCDHTTPConnection.h"
 #define degreesToRadians(x) (M_PI * x / 180.0)
 
 @interface GuideViewController ()
@@ -24,12 +25,34 @@
 @end
 
 @implementation GuideViewController
+{
+    NSString* segIdent;
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    segIdent = @"gameSeg";
     
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:@"http://moh2013.com/arabDevs/cartooni/morePrize.php"]];
     
+    JCDHTTPConnection *connection = [[JCDHTTPConnection alloc] initWithRequest:request];
+    
+    [connection executeRequestOnSuccess:
+     ^(NSHTTPURLResponse *response, NSString *bodyString) {
+         if([bodyString isEqualToString:@"yes"])
+         {
+             segIdent = @"gameSeg";
+         }else
+         {
+             segIdent = @"noSlotSeg";
+         }
+     } failure:^(NSHTTPURLResponse *response, NSString *bodyString, NSError *error) {
+         segIdent = @"gameSeg";
+     } didSendData:^(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite) {
+         //[self initTheGame];
+     }];
+
 
     
     
@@ -87,18 +110,13 @@
                          self.image3.center = self.image3.center;
                      }
                      completion:nil];
-
-
-    
-    
     [self performSelector:@selector(pushSeg) withObject:nil afterDelay:2.5];
-    
 }
 
 -(void)pushSeg
 {
   //  [self.myAudioPlayer stop];
-    [self performSegueWithIdentifier:@"gameSeg" sender:self];
+    [self performSegueWithIdentifier:segIdent sender:self];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -106,14 +124,9 @@
     // Dispose of any resources that can be recreated.
 }
 
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
+-(int)numberWithMin:(int)min max:(int)max
+{
+    return rand() % (max - min) + min;
 }
-*/
 
 @end

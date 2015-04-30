@@ -28,7 +28,7 @@
     NSURL *fileURL = [[NSURL alloc] initFileURLWithPath:soundFilePath ];
     self.myAudioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
     self.myAudioPlayer.numberOfLoops = -1;
-    [self.myAudioPlayer play];
+   // [self.myAudioPlayer play];
     return YES;
 }
 
@@ -52,7 +52,7 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
-    [self.myAudioPlayer play];
+    //[self.myAudioPlayer play];
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 

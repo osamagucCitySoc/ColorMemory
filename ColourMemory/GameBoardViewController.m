@@ -11,9 +11,10 @@
 #import "CONSTANTS.h"
 #import <GoogleMobileAds/GoogleMobileAds.h>
 #import <AVFoundation/AVFoundation.h>
-#import "MKInputBoxView.h"
+#import <QuartzCore/QuartzCore.h>
+#import "ResultViewController.h"
 
-@interface GameBoardViewController ()<GADInterstitialDelegate>
+@interface GameBoardViewController ()<GADInterstitialDelegate,MyModalViewControllerDelegate>
 
 @property(nonatomic, strong) GADInterstitial *interstitial;
 @property (nonatomic, retain) AVAudioPlayer *myAudioPlayer;
@@ -23,6 +24,7 @@
 
 @implementation GameBoardViewController
 {
+    
     NSTimer *t;
     
     /**
@@ -47,13 +49,23 @@
     int matchedAlready;
     BOOL countTime;
     DatabaseController* db; // to be used as interface to database operations.
-    
+    int whichCards;
     
     
 }
 
 #define DEGREES_TO_RADIANS(angle) (angle / 180.0 * M_PI)
 
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if([[segue identifier]isEqualToString:@"scoreModalSeg"])
+    {
+        ResultViewController* dst = (ResultViewController*)[segue destinationViewController];
+        [dst setDelegate:self];
+        [dst setScore:score];
+    }
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -91,66 +103,9 @@
     
     [self.collectionView setBackgroundColor:[UIColor colorWithPatternImage:[UIImage imageNamed:@"collectionViewBG.png"]]];
     
-    
-    MKInputBoxView *inputBoxView = [MKInputBoxView boxOfType:LoginAndPasswordInput];
-    [inputBoxView setBlurEffectStyle:UIBlurEffectStyleLight];
-    NSString* title = @"";
-    NSString* message = @"";
-    if(score <= 30)
-    {
-        title = @"مبرووووووك !!!";
-        message = @"أكتب حسابك بتويتر أو بريدك الإلكتروني و إسم التطبيق الذي تريده و سيتم الإرسال خلال ٢٤ ساعة";
-        inputBoxView.customise = ^(UITextField *textField) {
-            textField.placeholder = @"بريدك أو حسابك بتويتر";
-            if (textField.secureTextEntry) {
-                textField.placeholder = @"التطبيق المراد. أقل من دولارين";
-                [textField setSecureTextEntry:NO];
-            }
-            textField.textColor = [UIColor whiteColor];
-            textField.layer.cornerRadius = 4.0f;
-            return textField;
-        };
-        inputBoxView.onSubmit = ^(NSString *value1, NSString *value2) {
-            [self submitPrize:value1 app:value2 price:@"2"];
-        };
-    }else if(score <= 60)
-    {
-        title = @"مبرووووووك !!!";
-        message = @"أكتب حسابك بتويتر أو بريدك الإلكتروني و إسم التطبيق الذي تريده و سيتم الإرسال خلال ٢٤ ساعة";
-        inputBoxView.customise = ^(UITextField *textField) {
-            textField.placeholder = @"بريدك أو حسابك بتويتر";
-            if (textField.secureTextEntry) {
-                textField.placeholder = @"التطبيق المراد. أقل من دولار";
-                [textField setSecureTextEntry:NO];
-            }
-            textField.textColor = [UIColor whiteColor];
-            textField.layer.cornerRadius = 4.0f;
-            return textField;
-        };
-        inputBoxView.onSubmit = ^(NSString *value1, NSString *value2) {
-            [self submitPrize:value1 app:value1 price:@"1"];
-        };
-    }else
-    {
-        inputBoxView.customise = ^(UITextField *textField) {
-            textField.alpha = 0;
-            return textField;
-        };
-        
-        title = @"حاول مرة أخرى :(";
-        message = @"إلعب مرة أخرى مجانا و لا تفقد الأمل !";
-    }
-    [inputBoxView setSubmitButtonText:@"تم"];
-    [inputBoxView setCancelButtonText:@"إلغاء"];
-    [inputBoxView setTitle:title];
-    [inputBoxView setMessage:message];
-    [inputBoxView show];
 }
 
--(void)submitPrize:(NSString*)account app:(NSString*)app price:(NSString*)price
-{
-    NSLog(@"%@",@"OSAMA");
-}
+
 
 -(void)initTheGame
 {
@@ -159,7 +114,11 @@
     [self.interstitial setDelegate:self];
     self.interstitial.adUnitID = @"ca-app-pub-2433238124854818/7215102799";
     GADRequest *request = [GADRequest request];
-    [self.interstitial loadRequest:request];
+    int randomIndex = arc4random() % 20;
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, randomIndex * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [self.interstitial loadRequest:request];
+    });
 }
 
 - (BOOL)shouldAutorotate {
@@ -191,6 +150,8 @@
 
 -(void)randomizeTheBoard
 {
+    whichCards = arc4random()%5;
+    
     score = 0;
     matchedAlready = 0;
     
@@ -260,11 +221,15 @@
     //fade in
     [UIView animateWithDuration:0.5f delay:((CGFloat)indexPath.row/10.0f) options:UIViewAnimationOptionCurveEaseIn animations:^{
         [(UIImageView*)[cell viewWithTag:1] setAlpha:1.0f];
+        [[(UIImageView*)[cell viewWithTag:1] layer]setShadowColor:[UIColor redColor].CGColor];
+        [[(UIImageView*)[cell viewWithTag:1] layer]setShadowRadius:20];
+        [(UIImageView*)[cell viewWithTag:1] setClipsToBounds:NO];
+        [[(UIImageView*)[cell viewWithTag:1]layer] setMasksToBounds:NO];
     } completion:^(BOOL finished) {
     }];
     
     cell.layer.shadowColor = [UIColor whiteColor].CGColor;
-    cell.layer.shadowOffset = CGSizeMake(0, 0);
+    cell.layer.shadowOffset = CGSizeMake(10, 10);
     cell.layer.shadowOpacity = 1;
     cell.layer.shadowRadius = 5.0;
     cell.layer.cornerRadius = 20.0f;
@@ -385,6 +350,13 @@
         }
     }
     
+    NSString* appendWhichCards = @"";
+    if(whichCards > 0)
+    {
+        appendWhichCards = [NSString stringWithFormat:@"%i",whichCards];
+    }
+
+    
     if(firstOpenedCard == nil)
     {//first to open a card
         firstOpenedCard = indexPath;
@@ -392,7 +364,7 @@
                           duration:0.2
                            options:UIViewAnimationOptionTransitionFlipFromRight
                         animations:^{
-                            imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@%@%@",@"colour",[randomFilledArray objectAtIndex:indexPath.row],@".png"]];
+                            imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@%@%@%@",appendWhichCards,@"colour",[randomFilledArray objectAtIndex:indexPath.row],@".png"]];
                         } completion:^(BOOL finished) {
                             [self startAnimation:cell];
                         }];
@@ -407,7 +379,7 @@
                           duration:0.2
                            options:UIViewAnimationOptionTransitionFlipFromRight
                         animations:^{
-                            imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@%@%@",@"colour",[randomFilledArray objectAtIndex:indexPath.row],@".png"]];
+                            imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@%@%@%@",appendWhichCards,@"colour",[randomFilledArray objectAtIndex:indexPath.row],@".png"]];
                         } completion:^(BOOL finished) {
                             [self startAnimation:cell];
                             // need to check for a match and act accordingly
@@ -442,59 +414,7 @@
     
     if(matchedAlready >=8)
     {
-        MKInputBoxView *inputBoxView = [MKInputBoxView boxOfType:LoginAndPasswordInput];
-        [inputBoxView setBlurEffectStyle:UIBlurEffectStyleLight];
-        NSString* title = @"";
-        NSString* message = @"";
-        if(score <= 30)
-        {
-            title = @"مبرووووووك !!!";
-            message = @"أكتب حسابك بتويتر أو بريدك الإلكتروني و إسم التطبيق الذي تريده و سيتم الإرسال خلال ٢٤ ساعة";
-            inputBoxView.customise = ^(UITextField *textField) {
-                textField.placeholder = @"بريدك أو حسابك بتويتر";
-                if (textField.secureTextEntry) {
-                    textField.placeholder = @"التطبيق المراد. أقل من دولارين";
-                    [textField setSecureTextEntry:NO];
-                }
-                textField.textColor = [UIColor whiteColor];
-                textField.layer.cornerRadius = 4.0f;
-                return textField;
-            };
-            inputBoxView.onSubmit = ^(NSString *value1, NSString *value2) {
-                [self submitPrize:value1 app:value2 price:@"2"];
-            };
-        }else if(score <= 60)
-        {
-            title = @"مبرووووووك !!!";
-            message = @"أكتب حسابك بتويتر أو بريدك الإلكتروني و إسم التطبيق الذي تريده و سيتم الإرسال خلال ٢٤ ساعة";
-            inputBoxView.customise = ^(UITextField *textField) {
-                textField.placeholder = @"بريدك أو حسابك بتويتر";
-                if (textField.secureTextEntry) {
-                    textField.placeholder = @"التطبيق المراد. أقل من دولار";
-                    [textField setSecureTextEntry:NO];
-                }
-                textField.textColor = [UIColor whiteColor];
-                textField.layer.cornerRadius = 4.0f;
-                return textField;
-            };
-            inputBoxView.onSubmit = ^(NSString *value1, NSString *value2) {
-                [self submitPrize:value1 app:value1 price:@"1"];
-            };
-        }else
-        {
-            inputBoxView.customise = ^(UITextField *textField) {
-                textField.alpha = 0;
-                return textField;
-            };
-            
-            title = @"حاول مرة أخرى :(";
-            message = @"إلعب مرة أخرى مجانا و لا تفقد الأمل !";
-        }
-        [inputBoxView setSubmitButtonText:@"تم"];
-        [inputBoxView setCancelButtonText:@"إلغاء"];
-        [inputBoxView setTitle:title];
-        [inputBoxView setMessage:message];
-        [inputBoxView show];
+        [self performSegueWithIdentifier:@"scoreModalSeg" sender:self];
     }
 }
 
@@ -607,7 +527,7 @@
     {
         [t invalidate];
     }
-    t = [NSTimer scheduledTimerWithTimeInterval: 0.1
+    t = [NSTimer scheduledTimerWithTimeInterval: 1.0
                                          target: self
                                        selector:@selector(onTick:)
                                        userInfo: nil repeats:YES];
@@ -621,7 +541,7 @@
 }
 
 -(void)onTick:(NSTimer *)timer {
-    score += 0.1;
+    score += 1.0;
     [self updateScoreLabel];
 }
 
@@ -629,6 +549,15 @@
 {
     [self initTheGame];
 }
+
+- (void)myModalViewController:(ResultViewController *)controller didFinishSelecting:(NSString *)selectedDog{
+    
+    [self initTheGame];
+    [controller dismissViewControllerAnimated:YES completion:nil];
+}
+
+
+
 
 
 @end

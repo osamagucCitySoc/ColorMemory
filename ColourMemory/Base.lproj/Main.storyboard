@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="scy-6V-9d1">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7702" systemVersion="14B25" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="scy-6V-9d1">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7701"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
@@ -74,11 +74,12 @@
                         <outlet property="image2" destination="F6F-RB-kIq" id="Z1n-Pz-7ru"/>
                         <outlet property="image3" destination="TkZ-aB-jRp" id="QJl-Bn-hSC"/>
                         <segue destination="d4E-aG-R1e" kind="push" identifier="gameSeg" id="8bQ-cN-nQ8"/>
+                        <segue destination="EA6-2b-pAM" kind="push" identifier="noSlotSeg" id="HxB-b5-DWZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tZi-xf-Svn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="804" y="497"/>
+            <point key="canvasLocation" x="732" y="459"/>
         </scene>
         <!--Game Board View Controller-->
         <scene sceneID="scs-fk-TE8">
@@ -130,10 +131,54 @@
                     </collectionView>
                     <navigationItem key="navigationItem" id="Z7m-mv-22M"/>
                     <nil key="simulatedTopBarMetrics"/>
+                    <connections>
+                        <segue destination="GD0-Kw-NwX" kind="modal" identifier="scoreModalSeg" id="nck-MN-qDl"/>
+                    </connections>
                 </collectionViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Gps-h6-4Oh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1211" y="497"/>
+        </scene>
+        <!--Result View Controller-->
+        <scene sceneID="ZhO-YV-G46">
+            <objects>
+                <viewController id="GD0-Kw-NwX" customClass="ResultViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Nhh-FN-hjc"/>
+                        <viewControllerLayoutGuide type="bottom" id="SkT-y5-qtF"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="ej1-LN-YdL">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="collectionViewBG.png" translatesAutoresizingMaskIntoConstraints="NO" id="Cmj-MZ-3Ap">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="tongue out emoticon.png" translatesAutoresizingMaskIntoConstraints="NO" id="036-Ws-PvG">
+                                <rect key="frame" x="96" y="28" width="128" height="128"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="128" id="10o-Xn-Kqj"/>
+                                    <constraint firstAttribute="height" constant="128" id="9bp-2n-zfe"/>
+                                </constraints>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstAttribute="centerX" secondItem="036-Ws-PvG" secondAttribute="centerX" id="35A-xd-dN8"/>
+                            <constraint firstItem="SkT-y5-qtF" firstAttribute="top" secondItem="Cmj-MZ-3Ap" secondAttribute="bottom" id="4YH-XS-BF7"/>
+                            <constraint firstItem="Cmj-MZ-3Ap" firstAttribute="leading" secondItem="ej1-LN-YdL" secondAttribute="leadingMargin" constant="-16" id="Jlf-Uf-6c7"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="Cmj-MZ-3Ap" secondAttribute="trailing" constant="-16" id="S0Z-rA-154"/>
+                            <constraint firstItem="036-Ws-PvG" firstAttribute="top" secondItem="Nhh-FN-hjc" secondAttribute="bottom" constant="8" id="fMu-Jl-9vL"/>
+                            <constraint firstItem="Cmj-MZ-3Ap" firstAttribute="top" secondItem="ej1-LN-YdL" secondAttribute="topMargin" id="sek-Ol-Uko"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="teaserImageView" destination="036-Ws-PvG" id="rp7-aU-SpV"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="TIj-8A-kWI" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1656" y="497"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="LUe-AE-97H">
@@ -144,6 +189,7 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="M2x-eP-aTo">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="barTintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -154,6 +200,36 @@
             </objects>
             <point key="canvasLocation" x="272" y="497"/>
         </scene>
+        <!--No Slot View Controller-->
+        <scene sceneID="PIN-nQ-HmW">
+            <objects>
+                <viewController id="EA6-2b-pAM" customClass="NoSlotViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="4uS-Em-Qfh"/>
+                        <viewControllerLayoutGuide type="bottom" id="Ax0-dg-WXz"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="jKe-wS-sSL">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="collectionViewBG.png" translatesAutoresizingMaskIntoConstraints="NO" id="sOr-gu-he3">
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Ax0-dg-WXz" firstAttribute="top" secondItem="sOr-gu-he3" secondAttribute="bottom" id="CKi-br-7lr"/>
+                            <constraint firstItem="sOr-gu-he3" firstAttribute="top" secondItem="jKe-wS-sSL" secondAttribute="topMargin" id="D9m-b9-6kX"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="sOr-gu-he3" secondAttribute="trailing" constant="-16" id="rgo-Kz-QuN"/>
+                            <constraint firstItem="sOr-gu-he3" firstAttribute="leading" secondItem="jKe-wS-sSL" secondAttribute="leadingMargin" constant="-16" id="xNA-xK-t4L"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="yK9-Wa-O2Z"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="h1v-2V-cIl" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1211" y="1169"/>
+        </scene>
     </scenes>
     <resources>
         <image name="001.png" width="480" height="269"/>
@@ -161,7 +237,9 @@
         <image name="003.png" width="480" height="269"/>
         <image name="card_bg.png" width="152" height="190"/>
         <image name="circle.png" width="640" height="643"/>
+        <image name="collectionViewBG.png" width="640" height="1136"/>
         <image name="solid_bg@3x.png" width="640" height="1136"/>
+        <image name="tongue out emoticon.png" width="256" height="256"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
