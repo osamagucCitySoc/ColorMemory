@@ -7,7 +7,6 @@
 //
 
 #import "GameBoardViewController.h"
-#import "DatabaseController.h"
 #import "CONSTANTS.h"
 #import <GoogleMobileAds/GoogleMobileAds.h>
 #import <AVFoundation/AVFoundation.h>
@@ -48,7 +47,6 @@
     float score;
     int matchedAlready;
     BOOL countTime;
-    DatabaseController* db; // to be used as interface to database operations.
     int whichCards;
     
     
@@ -91,13 +89,7 @@
     }
     
     [self.collectionView registerClass:[UICollectionReusableView class] forSupplementaryViewOfKind: UICollectionElementKindSectionHeader withReuseIdentifier:@"headerSection"];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(storeScore:)
-                                                 name:@FINISHED_USERNAME_NOTIFICATION_NAME
-                                               object:nil];
-    
-    db = [[DatabaseController alloc]init];
+
     
     [self initTheGame];
     
@@ -135,13 +127,6 @@
     return UIInterfaceOrientationMaskPortrait;
 }
 
-
-
--(void)storeScore:(id)sender
-{
-    [db insertNewScoredRecord:score];
-    [self randomizeTheBoard];
-}
 
 /**
  This method is for randomizing the board at the beginning of the game.
@@ -490,23 +475,6 @@
     return nil;
 }
 
-#pragma mark alert delegate
--(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if(alertView.tag == 1)
-    {
-        // check if the username is already stored, then store the new score locally.
-        // otherwise, first take the username.
-        if(![[NSUserDefaults standardUserDefaults] objectForKey:@STORREDUSERNAME])
-        {
-            [self performSegueWithIdentifier:@"takeNameSeg" sender:self];
-        }else
-        {
-            [self storeScore:nil];
-            [self randomizeTheBoard];
-        }
-    }
-}
 
 
 #pragma mark gad delegate

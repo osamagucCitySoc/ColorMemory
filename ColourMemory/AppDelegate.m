@@ -7,7 +7,6 @@
 //
 
 #import "AppDelegate.h"
-#import "DatabaseController.h"
 #import "CONSTANTS.h"
 
 
@@ -18,11 +17,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // have to make sure, database is already stored and ready to go.
-    DatabaseController* db = [[DatabaseController alloc]init];
-    [db createDatabaseIfNotExists];
-    
-    [db syncLocalWithOnlineDB];
     
     NSString *soundFilePath = [[NSBundle mainBundle] pathForResource:@"bg" ofType: @"mp3"];
     NSURL *fileURL = [[NSURL alloc] initFileURLWithPath:soundFilePath ];
