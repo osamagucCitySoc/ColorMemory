@@ -11,7 +11,7 @@
 #import "JCDHTTPConnection.h"
 #import "MBProgressHUD.h"
 
-@interface ResultViewController ()<MBProgressHUDDelegate>
+@interface ResultViewController ()<MBProgressHUDDelegate,UIActionSheetDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *teaserImageView;
 @end
@@ -19,6 +19,9 @@
 @implementation ResultViewController
 {
     MBProgressHUD *HUD;
+    NSString* value1;
+    NSString* value2;
+    NSString* price;
 }
 
 @synthesize score;
@@ -35,9 +38,9 @@
     if(score <= 20)
     {
         title = @"مبرووووووك !!!";
-        message = @"أكتب حسابك بتويتر أو بريدك الإلكتروني و إسم التطبيق الذي تريده و سيتم الإرسال خلال ٢٤ ساعة";
+        message = @"أكتب بريدك الإلكتروني لحساب أبل و إسم التطبيق الذي تريده و سيتم الإرسال خلال ٢٤ ساعة";
         inputBoxView.customise = ^(UITextField *textField) {
-            textField.placeholder = @"بريدك أو حسابك بتويتر";
+            textField.placeholder = @"بريدك الإلكتروني لحساب أبل";
             if (textField.secureTextEntry) {
                 textField.placeholder = @"التطبيق المراد. أقل من دولارين";
                 [textField setSecureTextEntry:NO];
@@ -46,17 +49,18 @@
             textField.layer.cornerRadius = 4.0f;
             return textField;
         };
-        inputBoxView.onSubmit = ^(NSString *value1, NSString *value2) {
-            [self showLoader];
-            [self submitPrize:value1 app:value2 price:@"2"];
+        inputBoxView.onSubmit = ^(NSString *value11, NSString *value22) {
+            value1 = value11;
+            value2 = value22;
+            price = @"";
         };
         [self.teaserImageView setImage:[UIImage imageNamed:@"hungry emoticon.png"]];
     }else if(score <= 30)
     {
         title = @"مبرووووووك !!!";
-        message = @"أكتب حسابك بتويتر أو بريدك الإلكتروني و إسم التطبيق الذي تريده و سيتم الإرسال خلال ٢٤ ساعة";
+        message = @"أكتب بريدك الإلكتروني لحساب أبل و إسم التطبيق الذي تريده و سيتم الإرسال خلال ٢٤ ساعة";
         inputBoxView.customise = ^(UITextField *textField) {
-            textField.placeholder = @"بريدك أو حسابك بتويتر";
+            textField.placeholder = @"بريدك الإلكتروني لحساب أبل";
             if (textField.secureTextEntry) {
                 textField.placeholder = @"التطبيق المراد. أقل من دولار";
                 [textField setSecureTextEntry:NO];
@@ -65,9 +69,10 @@
             textField.layer.cornerRadius = 4.0f;
             return textField;
         };
-        inputBoxView.onSubmit = ^(NSString *value1, NSString *value2) {
-            [self showLoader];
-            [self submitPrize:value1 app:value1 price:@"1"];
+        inputBoxView.onSubmit = ^(NSString *value11, NSString *value22) {
+            value1 = value11;
+            value2 = value22;
+            price = @"1";
         };
         [self.teaserImageView setImage:[UIImage imageNamed:@"hungry emoticon.png"]];
     }else
@@ -98,9 +103,9 @@
 }
 
 
--(void)submitPrize:(NSString*)account app:(NSString*)app price:(NSString*)price
+-(void)submitPrize:(NSString*)account app:(NSString*)app pricee:(NSString*)pricee country:(NSString*)country
 {
-    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://moh2013.com/arabDevs/cartooni/addPrize.php?contact=%@&app=%@&type=%@",account,app,price]]];
+    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://moh2013.com/arabDevs/cartooni/addPrize.php?contact=%@&app=%@&type=%@&country=%@",account,app,pricee,country]]];
     
     JCDHTTPConnection *connection = [[JCDHTTPConnection alloc] initWithRequest:request];
     
@@ -112,6 +117,43 @@
      } didSendData:^(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite) {
          //[self initTheGame];
      }];
+}
+
+
+-(void)showCountrySelection
+{
+    UIActionSheet* sheet = [[UIActionSheet alloc]initWithTitle:@"حسابك أبل تابع لأي دولة؟" delegate:self cancelButtonTitle:@"إلغاء" destructiveButtonTitle:nil otherButtonTitles:@"أمريكا",@"الكويت",@"السعودية", nil];
+    sheet.tag = 1;
+    [sheet showInView:self.view];
+}
+
+
+#pragma mark action sheet delegate
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(actionSheet.tag == 1)
+    {
+        if(buttonIndex == actionSheet.cancelButtonIndex)
+        {
+            [self.delegate myModalViewController:self didFinishSelecting:@"Abby"];
+        }else
+        {
+            NSString* country = @"";
+            if(buttonIndex == 0)
+            {
+                country = @"أمريكا";
+            }else if(buttonIndex == 1)
+            {
+                country = @"الكويت";
+            }else
+            {
+                country = @"السعودية";
+            }
+            
+            [self showLoader];
+            [self submitPrize:value1 app:value2 pricee:@"2" country:country];
+        }
+    }
 }
 
 #pragma mark-
