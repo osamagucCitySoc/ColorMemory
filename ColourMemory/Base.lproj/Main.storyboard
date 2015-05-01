@@ -46,6 +46,16 @@
                                     <constraint firstAttribute="height" constant="128" id="Y5a-5S-mnL"/>
                                 </constraints>
                             </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EH2-H8-vBd" customClass="FlatButton">
+                                <rect key="frame" x="234" y="20" width="70" height="30"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="DtT-1y-m3i"/>
+                                    <constraint firstAttribute="width" constant="70" id="UIl-Jb-GKM"/>
+                                </constraints>
+                                <state key="normal" title="إبدأ التحدي !">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
@@ -64,11 +74,14 @@
                             <constraint firstAttribute="centerY" secondItem="mSL-9a-ZQC" secondAttribute="centerY" id="hnV-9U-9bm"/>
                             <constraint firstItem="F6F-RB-kIq" firstAttribute="trailing" secondItem="4Jo-0U-T3X" secondAttribute="trailingMargin" id="kd3-Ga-k5E"/>
                             <constraint firstItem="Ynw-O6-Wwo" firstAttribute="top" secondItem="4Jo-0U-T3X" secondAttribute="topMargin" id="ney-0b-F5k"/>
+                            <constraint firstItem="EH2-H8-vBd" firstAttribute="top" secondItem="oZh-eq-Gui" secondAttribute="bottom" id="rTN-xt-fU1"/>
+                            <constraint firstItem="EH2-H8-vBd" firstAttribute="trailing" secondItem="4Jo-0U-T3X" secondAttribute="trailingMargin" id="uMb-qn-RoO"/>
                             <constraint firstItem="Ynw-O6-Wwo" firstAttribute="leading" secondItem="4Jo-0U-T3X" secondAttribute="leadingMargin" constant="-16" id="xya-Vc-oPk"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="K9B-sW-hIW"/>
                     <connections>
+                        <outlet property="StartButton" destination="EH2-H8-vBd" id="yfZ-zj-qKm"/>
                         <outlet property="circleImageView" destination="mSL-9a-ZQC" id="2EK-Vi-9Ow"/>
                         <outlet property="image1" destination="JHK-1N-XW7" id="jq3-hp-3kD"/>
                         <outlet property="image2" destination="F6F-RB-kIq" id="Z1n-Pz-7ru"/>

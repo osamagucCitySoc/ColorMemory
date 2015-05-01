@@ -109,6 +109,7 @@
 		E8C198A51AF221C10051B080 /* 4colour6@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E8C198821AF221C10051B080 /* 4colour6@3x.png */; };
 		E8C198A61AF221C10051B080 /* 4colour7@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E8C198831AF221C10051B080 /* 4colour7@3x.png */; };
 		E8C198A71AF221C10051B080 /* 4colour8@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = E8C198841AF221C10051B080 /* 4colour8@3x.png */; };
+		E8D17CB41AF3B8990058401F /* FlatButton.m in Sources */ = {isa = PBXBuildFile; fileRef = E8D17CB31AF3B8990058401F /* FlatButton.m */; };
 		E8E3DB3B1AF368DA00DC4AA6 /* Bolts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E3DB381AF368DA00DC4AA6 /* Bolts.framework */; };
 		E8E3DB3C1AF368DA00DC4AA6 /* Parse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E3DB391AF368DA00DC4AA6 /* Parse.framework */; };
 		E8E3DB3D1AF368DA00DC4AA6 /* ParseUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E8E3DB3A1AF368DA00DC4AA6 /* ParseUI.framework */; };
@@ -318,6 +319,8 @@
 		E8C198821AF221C10051B080 /* 4colour6@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "4colour6@3x.png"; sourceTree = "<group>"; };
 		E8C198831AF221C10051B080 /* 4colour7@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "4colour7@3x.png"; sourceTree = "<group>"; };
 		E8C198841AF221C10051B080 /* 4colour8@3x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "4colour8@3x.png"; sourceTree = "<group>"; };
+		E8D17CB21AF3B8990058401F /* FlatButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlatButton.h; sourceTree = "<group>"; };
+		E8D17CB31AF3B8990058401F /* FlatButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlatButton.m; sourceTree = "<group>"; };
 		E8E3DB381AF368DA00DC4AA6 /* Bolts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Bolts.framework; sourceTree = "<group>"; };
 		E8E3DB391AF368DA00DC4AA6 /* Parse.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Parse.framework; sourceTree = "<group>"; };
 		E8E3DB3A1AF368DA00DC4AA6 /* ParseUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = ParseUI.framework; sourceTree = "<group>"; };
@@ -449,6 +452,8 @@
 		04108AD719B46BFB00FFD029 /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				E8D17CB21AF3B8990058401F /* FlatButton.h */,
+				E8D17CB31AF3B8990058401F /* FlatButton.m */,
 				E86A46D61AF1495400A21AAB /* MBProgressHUD.h */,
 				E86A46D71AF1495400A21AAB /* MBProgressHUD.m */,
 				E86A46D31AF1472100A21AAB /* JCDHTTPConnection.h */,
@@ -760,6 +765,9 @@
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Osama Rabie";
 				TargetAttributes = {
+					04A548E019B458F90050067D = {
+						DevelopmentTeam = 9672ZX333W;
+					};
 					04A5490119B458F90050067D = {
 						TestTargetID = 04A548E019B458F90050067D;
 					};
@@ -953,6 +961,7 @@
 				04108AE619B476B800FFD029 /* Reachability.m in Sources */,
 				04A548F519B458F90050067D /* AppDelegate.m in Sources */,
 				E86A46D21AF13F5000A21AAB /* MKInputBoxView.m in Sources */,
+				E8D17CB41AF3B8990058401F /* FlatButton.m in Sources */,
 				04A548F119B458F90050067D /* main.m in Sources */,
 				E86A46D81AF1495400A21AAB /* MBProgressHUD.m in Sources */,
 				04108ADA19B46C0A00FFD029 /* CONSTANTS.m in Sources */,
@@ -1025,7 +1034,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Musaed Alazmi (9672ZX333W)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Musaed Alazmi (9672ZX333W)";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1043,6 +1053,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
+				PROVISIONING_PROFILE = "16ed90de-0ee1-4922-9f8f-70a88e3f5127";
 				SDKROOT = iphoneos;
 			};
 			name = Debug;
@@ -1063,7 +1074,8 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Musaed Alazmi (9672ZX333W)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Musaed Alazmi (9672ZX333W)";
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -1074,6 +1086,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				PROVISIONING_PROFILE = "16ed90de-0ee1-4922-9f8f-70a88e3f5127";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -1084,6 +1097,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Musaed Alazmi (9672ZX333W)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1093,6 +1107,7 @@
 				INFOPLIST_FILE = "ColourMemory/ColourMemory-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "16ed90de-0ee1-4922-9f8f-70a88e3f5127";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1102,6 +1117,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Musaed Alazmi (9672ZX333W)";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)",
@@ -1111,6 +1127,7 @@
 				INFOPLIST_FILE = "ColourMemory/ColourMemory-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "16ed90de-0ee1-4922-9f8f-70a88e3f5127";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

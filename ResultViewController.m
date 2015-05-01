@@ -55,6 +55,7 @@
             price = @"";
         };
         [self.teaserImageView setImage:[UIImage imageNamed:@"hungry emoticon.png"]];
+        [self showCountrySelection];
     }else if(score <= 30)
     {
         title = @"مبرووووووك !!!";
@@ -75,6 +76,7 @@
             price = @"1";
         };
         [self.teaserImageView setImage:[UIImage imageNamed:@"hungry emoticon.png"]];
+        [self showCountrySelection];
     }else
     {
         inputBoxView.customise = ^(UITextField *textField) {

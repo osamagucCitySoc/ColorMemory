@@ -11,6 +11,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "JCDHTTPConnection.h"
 #import "NoSlotViewController.h"
+#import "FlatButton.h"
 
 #define degreesToRadians(x) (M_PI * x / 180.0)
 
@@ -21,6 +22,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *image2;
 @property (weak, nonatomic) IBOutlet UIImageView *image3;
 
+@property (weak, nonatomic) IBOutlet FlatButton *StartButton;
 
 @property (nonatomic, retain) AVAudioPlayer *myAudioPlayer2;
 
@@ -45,6 +47,16 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 
+    
+    [self.StartButton setBackgroundColor:[UIColor colorWithRed:0.521569
+                                                        green:0.768627
+                                                         blue:0.254902 alpha:1]];
+    self.StartButton.layer.cornerRadius = 10;
+    [self.StartButton setTitle:@"إبدأ التحدي !" forState:UIControlStateNormal];
+    self.StartButton.titleLabel.font = [UIFont fontWithName:@"Avenir-Black" size:10.0f];
+    self.StartButton.alpha = 0;
+    [self.StartButton addTarget:self action:@selector(flatButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+    [self.StartButton setTitleColor:[UIColor whiteColor] forState:UIControlStateNormal];
     segIdent = @"gameSeg";
     
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:@"http://moh2013.com/arabDevs/cartooni/morePrize.php"]];
@@ -123,8 +135,13 @@
                          self.image3.transform = CGAffineTransformMakeScale(1.0, 1.0);
                          self.image3.center = self.image3.center;
                      }
-                     completion:nil];
-    [self performSelector:@selector(pushSeg) withObject:nil afterDelay:2.5];
+                     completion:^(BOOL finished){
+                         self.StartButton.alpha = 1;
+                     }];
+   // [self performSelector:@selector(pushSeg) withObject:nil afterDelay:2.5];
+}
+-(void)flatButtonPressed:(id)button {
+    [self pushSeg];
 }
 
 -(void)pushSeg
