@@ -32,7 +32,7 @@
     [inputBoxView setBlurEffectStyle:UIBlurEffectStyleExtraLight];
     NSString* title = @"";
     NSString* message = @"";
-    if(score <= 30)
+    if(score <= 20)
     {
         title = @"مبرووووووك !!!";
         message = @"أكتب حسابك بتويتر أو بريدك الإلكتروني و إسم التطبيق الذي تريده و سيتم الإرسال خلال ٢٤ ساعة";
@@ -51,7 +51,7 @@
             [self submitPrize:value1 app:value2 price:@"2"];
         };
         [self.teaserImageView setImage:[UIImage imageNamed:@"hungry emoticon.png"]];
-    }else if(score <= 60)
+    }else if(score <= 30)
     {
         title = @"مبرووووووك !!!";
         message = @"أكتب حسابك بتويتر أو بريدك الإلكتروني و إسم التطبيق الذي تريده و سيتم الإرسال خلال ٢٤ ساعة";

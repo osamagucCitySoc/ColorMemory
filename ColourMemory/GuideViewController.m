@@ -10,6 +10,8 @@
 #import <QuartzCore/QuartzCore.h>
 #import <AVFoundation/AVFoundation.h>
 #import "JCDHTTPConnection.h"
+#import "NoSlotViewController.h"
+
 #define degreesToRadians(x) (M_PI * x / 180.0)
 
 @interface GuideViewController ()
@@ -27,6 +29,17 @@
 @implementation GuideViewController
 {
     NSString* segIdent;
+    NSString* imageURL;
+}
+
+
+-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if([[segue identifier]isEqualToString:@"noSlotSeg"])
+    {
+        NoSlotViewController* dst = (NoSlotViewController*)[segue destinationViewController];
+        [dst setImageURL:imageURL];
+    }
 }
 
 - (void)viewDidLoad {
@@ -45,6 +58,7 @@
              segIdent = @"gameSeg";
          }else
          {
+             imageURL = bodyString;
              segIdent = @"noSlotSeg";
          }
      } failure:^(NSHTTPURLResponse *response, NSString *bodyString, NSError *error) {

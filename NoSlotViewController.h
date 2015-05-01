@@ -10,4 +10,6 @@
 
 @interface NoSlotViewController : UIViewController
 
+@property (nonatomic, strong) NSString* imageURL;
+
 @end
