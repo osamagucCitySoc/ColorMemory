@@ -135,7 +135,7 @@
 
 -(void)randomizeTheBoard
 {
-    whichCards = arc4random()%5;
+    whichCards = arc4random()%9;
     
     score = 0;
     matchedAlready = 0;
@@ -206,11 +206,9 @@
     //fade in
     [UIView animateWithDuration:0.5f delay:((CGFloat)indexPath.row/10.0f) options:UIViewAnimationOptionCurveEaseIn animations:^{
         [(UIImageView*)[cell viewWithTag:1] setAlpha:1.0f];
-        [[(UIImageView*)[cell viewWithTag:1] layer]setShadowColor:[UIColor redColor].CGColor];
-        [[(UIImageView*)[cell viewWithTag:1] layer]setShadowRadius:20];
-        [(UIImageView*)[cell viewWithTag:1] setClipsToBounds:NO];
-        [[(UIImageView*)[cell viewWithTag:1]layer] setMasksToBounds:NO];
     } completion:^(BOOL finished) {
+        cell.layer.shadowOpacity = 0;
+        cell.layer.shadowColor = [UIColor clearColor].CGColor;
     }];
     
     cell.layer.shadowColor = [UIColor whiteColor].CGColor;

@@ -43,7 +43,7 @@
     NSURL *fileURL = [[NSURL alloc] initFileURLWithPath:soundFilePath ];
     self.myAudioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
     self.myAudioPlayer.numberOfLoops = -1;
-    [self.myAudioPlayer play];
+    //[self.myAudioPlayer play];
     return YES;
 }
 
