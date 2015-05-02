@@ -10,6 +10,7 @@
 #import "CONSTANTS.h"
 #import <Parse/Parse.h>
 
+
 @implementation AppDelegate
 {
     
@@ -44,6 +45,9 @@
     self.myAudioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
     self.myAudioPlayer.numberOfLoops = -1;
     //[self.myAudioPlayer play];
+    
+    
+    
     return YES;
 }
 

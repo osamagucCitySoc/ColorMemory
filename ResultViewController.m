@@ -11,7 +11,7 @@
 #import "JCDHTTPConnection.h"
 #import "MBProgressHUD.h"
 
-@interface ResultViewController ()<MBProgressHUDDelegate,UIActionSheetDelegate>
+@interface ResultViewController ()<MBProgressHUDDelegate,UIActionSheetDelegate,NSURLConnectionDataDelegate,NSURLConnectionDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *teaserImageView;
 @end
@@ -31,11 +31,13 @@
     [super viewDidLoad];
     [self launchHUD];
     
+    
+        
     MKInputBoxView *inputBoxView = [MKInputBoxView boxOfType:LoginAndPasswordInput];
     [inputBoxView setBlurEffectStyle:UIBlurEffectStyleExtraLight];
     NSString* title = @"";
     NSString* message = @"";
-    if(score <= 20)
+    if(score <= 15)
     {
         title = @"مبرووووووك !!!";
         message = @"أكتب بريدك الإلكتروني لحساب أبل و إسم التطبيق الذي تريده و سيتم الإرسال خلال ٢٤ ساعة";
@@ -53,10 +55,10 @@
             value1 = value11;
             value2 = value22;
             price = @"";
+            [self showCountrySelection];
         };
         [self.teaserImageView setImage:[UIImage imageNamed:@"hungry emoticon.png"]];
-        [self showCountrySelection];
-    }else if(score <= 30)
+    }else if(score <= 20)
     {
         title = @"مبرووووووك !!!";
         message = @"أكتب بريدك الإلكتروني لحساب أبل و إسم التطبيق الذي تريده و سيتم الإرسال خلال ٢٤ ساعة";
@@ -74,9 +76,9 @@
             value1 = value11;
             value2 = value22;
             price = @"1";
+            [self showCountrySelection];
         };
         [self.teaserImageView setImage:[UIImage imageNamed:@"hungry emoticon.png"]];
-        [self showCountrySelection];
     }else
     {
         inputBoxView.customise = ^(UITextField *textField) {
@@ -107,18 +109,48 @@
 
 -(void)submitPrize:(NSString*)account app:(NSString*)app pricee:(NSString*)pricee country:(NSString*)country
 {
-    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://moh2013.com/arabDevs/cartooni/addPrize.php?contact=%@&app=%@&type=%@&country=%@",account,app,pricee,country]]];
     
-    JCDHTTPConnection *connection = [[JCDHTTPConnection alloc] initWithRequest:request];
+    NSString* keyword = [@"OSAMADESC" stringByAppendingFormat:@"%f",[[NSDate date] timeIntervalSince1970]];
     
-    [connection executeRequestOnSuccess:
-     ^(NSHTTPURLResponse *response, NSString *bodyString) {
-         [self.delegate myModalViewController:self didFinishSelecting:@"Abby"];
-     } failure:^(NSHTTPURLResponse *response, NSString *bodyString, NSError *error) {
-         [self.delegate myModalViewController:self didFinishSelecting:@"Abby"];
-     } didSendData:^(NSInteger bytesWritten, NSInteger totalBytesWritten, NSInteger totalBytesExpectedToWrite) {
-         //[self initTheGame];
-     }];
+    NSInteger randomNumber = arc4random() % 25;
+    randomNumber++;
+    
+    for(int i = 1 ; i <= randomNumber ; i++)
+    {
+        NSData *data = [keyword dataUsingEncoding:NSUTF8StringEncoding];
+        keyword = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+        
+        data = [account dataUsingEncoding:NSUTF8StringEncoding];
+        account = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+        
+        data = [app dataUsingEncoding:NSUTF8StringEncoding];
+        app = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+        
+        data = [pricee dataUsingEncoding:NSUTF8StringEncoding];
+        pricee = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+        
+        data = [country dataUsingEncoding:NSUTF8StringEncoding];
+        country = [data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength];
+    }
+    
+    NSString *post = [NSString stringWithFormat:@"contact=%@&app=%@&type=%@&country=%@&keyword=%@",account,app,pricee,country,keyword];
+    
+    NSData *postData = [post dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+    NSString *postLength = [NSString stringWithFormat:@"%lu", (unsigned long)[post length]];
+    
+    NSURL *url = [NSURL URLWithString:@"http://moh2013.com/arabDevs/cartooni/addPrize.php"];
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:90.0];
+    [request setHTTPMethod:@"POST"];
+    
+    [request setValue:postLength forHTTPHeaderField:@"Content-Length"];
+    [request setHTTPBody:postData];
+    
+    NSURLConnection* getResultsConnection = [[NSURLConnection alloc]initWithRequest:request delegate:self    startImmediately:NO];
+    
+    [getResultsConnection scheduleInRunLoop:[NSRunLoop mainRunLoop]
+                                    forMode:NSDefaultRunLoopMode];
+    [getResultsConnection start];
+
 }
 
 
@@ -172,6 +204,15 @@
 }
 - (void)showLoader{
     [HUD show:YES];
+}
+
+
+#pragma mark
+-(void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+{
+    [self hideLoader];
+    NSLog(@"%@",[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+    [self.delegate myModalViewController:self didFinishSelecting:@"Abby"];
 }
 
 
