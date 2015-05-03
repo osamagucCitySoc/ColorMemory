@@ -37,7 +37,7 @@
     [inputBoxView setBlurEffectStyle:UIBlurEffectStyleExtraLight];
     NSString* title = @"";
     NSString* message = @"";
-    if(score <= 15)
+    if(score <= 20)
     {
         title = @"مبرووووووك !!!";
         message = @"أكتب بريدك الإلكتروني لحساب أبل و إسم التطبيق الذي تريده و سيتم الإرسال خلال ٢٤ ساعة";
@@ -58,7 +58,7 @@
             [self showCountrySelection];
         };
         [self.teaserImageView setImage:[UIImage imageNamed:@"hungry emoticon.png"]];
-    }else if(score <= 20)
+    }else if(score <= 25)
     {
         title = @"مبرووووووك !!!";
         message = @"أكتب بريدك الإلكتروني لحساب أبل و إسم التطبيق الذي تريده و سيتم الإرسال خلال ٢٤ ساعة";
@@ -90,6 +90,9 @@
         message = @"إلعب مرة أخرى مجانا و لا تفقد الأمل !";
         [self.teaserImageView setImage:[UIImage imageNamed:@"tongue out emoticon.png"]];
     }
+    inputBoxView.onSubmit = ^(NSString *value11, NSString *value22) {
+       [self.delegate myModalViewController:self didFinishSelecting:@"Abby"];
+    };
     inputBoxView.onCancel = ^()
     {
         [self.delegate myModalViewController:self didFinishSelecting:@"Abby"];

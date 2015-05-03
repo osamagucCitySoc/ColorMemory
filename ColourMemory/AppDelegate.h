@@ -13,5 +13,6 @@
 
 @property (strong, nonatomic) UIWindow *window;
 @property (nonatomic, retain) AVAudioPlayer *myAudioPlayer;
+@property (nonatomic)BOOL audio;
 
 @end

@@ -12,6 +12,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <QuartzCore/QuartzCore.h>
 #import "ResultViewController.h"
+#import "AppDelegate.h"
 
 @interface GameBoardViewController ()<GADInterstitialDelegate,MyModalViewControllerDelegate>
 
@@ -24,6 +25,9 @@
 @implementation GameBoardViewController
 {
     
+    AppDelegate* appDelegate;
+    UIButton* switchSound;
+    BOOL audio;
     NSTimer *t;
     
     /**
@@ -77,6 +81,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    audio = YES;
+    appDelegate = (AppDelegate*)[[UIApplication sharedApplication] delegate];
     NSString *soundFilePath = [[NSBundle mainBundle] pathForResource:@"bg" ofType: @"mp3"];
     NSURL *fileURL = [[NSURL alloc] initFileURLWithPath:soundFilePath ];
     self.myAudioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
@@ -294,7 +300,11 @@
     NSURL *fileURL = [[NSURL alloc] initFileURLWithPath:soundFilePath ];
     self.myAudioPlayer2 = [[AVAudioPlayer alloc] initWithContentsOfURL:fileURL error:nil];
     self.myAudioPlayer2.numberOfLoops = 0; //infinite loop
-    [self.myAudioPlayer2 play];
+    if(audio)
+    {
+        [self.myAudioPlayer2 play];
+    }
+    AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
     
     if(firstOpenedCard != nil)
     {
@@ -448,10 +458,22 @@
         [scoreLabel setBackgroundColor:[UIColor clearColor]];
         [scoreLabel setTextColor:[UIColor whiteColor]];
         UIButton* button = [[UIButton alloc]initWithFrame:CGRectMake(280, 9, 32, 32)];
+        switchSound = [[UIButton alloc]initWithFrame:CGRectMake(250, 9, 32, 32)];
         [button setImage:[UIImage imageNamed:@"Repeat-32.png"] forState:UIControlStateNormal];
+        if(audio)
+        {
+            [switchSound setImage:[UIImage imageNamed:@"Hearing-32.png"] forState:UIControlStateNormal];
+            [switchSound setTag:1];
+        }else
+        {
+            [switchSound setImage:[UIImage imageNamed:@"Not Hearing-32.png"] forState:UIControlStateNormal];
+            [switchSound setTag:2];
+        }
+        [switchSound addTarget:self action:@selector(changeAudioClicked:) forControlEvents:UIControlEventTouchUpInside];
         [button addTarget:self action:@selector(resetClicked:) forControlEvents:UIControlEventTouchUpInside];
         [self updateScoreLabel];
         [reusableview addSubview:scoreLabel];
+        [reusableview addSubview:switchSound];
         [reusableview addSubview:button];
         return reusableview;
     }else if(kind == UICollectionElementKindSectionFooter)
@@ -514,6 +536,28 @@
 -(void)resetClicked:(UIButton*)sender
 {
     [self initTheGame];
+}
+
+-(void)changeAudioClicked:(UIButton*)sender
+{
+    if(audio)
+    {
+        audio = NO;
+        appDelegate.audio = NO;
+        [appDelegate.myAudioPlayer stop];
+        [switchSound setImage:[UIImage imageNamed:@"Not Hearing-32.png"] forState:UIControlStateNormal];
+        [switchSound setNeedsDisplay];
+        [switchSound setTag:1];
+    }else
+    {
+        audio = YES;
+        appDelegate.audio = YES;
+        [appDelegate.myAudioPlayer play];
+        [switchSound setImage:[UIImage imageNamed:@"Hearing-32.png"] forState:UIControlStateNormal];
+        [switchSound setNeedsDisplay];
+        [switchSound setTag:1];
+
+    }
 }
 
 - (void)myModalViewController:(ResultViewController *)controller didFinishSelecting:(NSString *)selectedDog{

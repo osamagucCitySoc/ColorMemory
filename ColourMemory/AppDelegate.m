@@ -18,6 +18,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    self.audio = YES;
+    
     [Parse setApplicationId:@"ns2P9ioCxQJcla4sd3ZaEdbHatVIC3EWhGizPDEz"
                   clientKey:@"APOQvvv961eSM4XlcNIOafcgSjfOSNuCdJc3zgiP"];
     
@@ -71,7 +73,10 @@
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
 {
-    [self.myAudioPlayer play];
+    if(self.audio)
+    {
+        [self.myAudioPlayer play];
+    }
     // Called as part of the transition from the background to the inactive state; here you can undo many of the changes made on entering the background.
 }
 
