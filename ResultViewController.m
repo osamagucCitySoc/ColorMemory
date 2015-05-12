@@ -37,7 +37,7 @@
     [inputBoxView setBlurEffectStyle:UIBlurEffectStyleExtraLight];
     NSString* title = @"";
     NSString* message = @"";
-    if(score <= 20)
+    if(score <= 15)
     {
         title = @"مبرووووووك !!!";
         message = @"أكتب بريدك الإلكتروني لحساب أبل و إسم التطبيق الذي تريده و سيتم الإرسال خلال ٢٤ ساعة";
@@ -58,7 +58,7 @@
             [self showCountrySelection];
         };
         [self.teaserImageView setImage:[UIImage imageNamed:@"hungry emoticon.png"]];
-    }else if(score <= 25)
+    }else if(score <= 20)
     {
         title = @"مبرووووووك !!!";
         message = @"أكتب بريدك الإلكتروني لحساب أبل و إسم التطبيق الذي تريده و سيتم الإرسال خلال ٢٤ ساعة";

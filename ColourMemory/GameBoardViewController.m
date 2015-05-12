@@ -13,6 +13,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import "ResultViewController.h"
 #import "AppDelegate.h"
+#import "Reachability.h"
 
 @interface GameBoardViewController ()<GADInterstitialDelegate,MyModalViewControllerDelegate>
 
@@ -107,6 +108,9 @@
 
 -(void)initTheGame
 {
+    
+    if([self connected])
+    {
     [self randomizeTheBoard];
     self.interstitial = [[GADInterstitial alloc] init];
     [self.interstitial setDelegate:self];
@@ -117,6 +121,12 @@
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, randomIndex * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
         [self.interstitial loadRequest:request];
     });
+    }else
+    {
+        UIAlertView* alert = [[UIAlertView alloc]initWithTitle:@"عذراً" message:@"يجب أن تكون متصلاً بالإنترنت" delegate:self cancelButtonTitle:@"جرب الأن؟" otherButtonTitles:nil];
+        [alert setTag:111];
+        [alert show];
+    }
 }
 
 - (BOOL)shouldAutorotate {
@@ -139,8 +149,18 @@
  I have implemented a quick tricky algorithm based on the "Index Sort".
  **/
 
+
+- (BOOL)connected
+{
+    Reachability *reachability = [Reachability reachabilityForInternetConnection];
+    NetworkStatus networkStatus = [reachability currentReachabilityStatus];
+    return networkStatus != NotReachable;
+}
+
 -(void)randomizeTheBoard
 {
+    
+    
     whichCards = arc4random()%9;
     
     score = 0;
@@ -304,7 +324,7 @@
     {
         [self.myAudioPlayer2 play];
     }
-    AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
+   // AudioServicesPlayAlertSound(kSystemSoundID_Vibrate);
     
     if(firstOpenedCard != nil)
     {
@@ -312,7 +332,7 @@
         {
             firstOpenedCard = nil;
             [UIView transitionWithView:imageView
-                              duration:0.2
+                              duration:0.0
                                options:UIViewAnimationOptionTransitionFlipFromRight
                             animations:^{
                                 imageView.image = [UIImage imageNamed:@"card_bg.png"];
@@ -331,7 +351,7 @@
         {
             secondOpenedCard = nil;
             [UIView transitionWithView:imageView
-                              duration:0.2
+                              duration:0.0
                                options:UIViewAnimationOptionTransitionFlipFromRight
                             animations:^{
                                 imageView.image = [UIImage imageNamed:@"card_bg.png"];
@@ -354,7 +374,7 @@
     {//first to open a card
         firstOpenedCard = indexPath;
         [UIView transitionWithView:imageView
-                          duration:0.2
+                          duration:0.0
                            options:UIViewAnimationOptionTransitionFlipFromRight
                         animations:^{
                             imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@%@%@%@",appendWhichCards,@"colour",[randomFilledArray objectAtIndex:indexPath.row],@".png"]];
@@ -369,7 +389,7 @@
         [self.collectionView setUserInteractionEnabled:NO];
         secondOpenedCard = indexPath;
         [UIView transitionWithView:imageView
-                          duration:0.2
+                          duration:0.0
                            options:UIViewAnimationOptionTransitionFlipFromRight
                         animations:^{
                             imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@%@%@%@",appendWhichCards,@"colour",[randomFilledArray objectAtIndex:indexPath.row],@".png"]];
@@ -382,7 +402,7 @@
                                 //                                [self performSelector:@selector(makeTheTwoMatchedUnClickable) withObject:nil afterDelay:0.5];
                             }else
                             {
-                                [self performSelector:@selector(unFlipTheNonMatched) withObject:nil afterDelay:0.2];
+                                [self performSelector:@selector(unFlipTheNonMatched) withObject:nil afterDelay:0.1];
                             }
                         }];
         return;
@@ -566,6 +586,15 @@
     [controller dismissViewControllerAnimated:YES completion:nil];
 }
 
+
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(alertView.tag == 111)
+    {
+        [self initTheGame];
+    }
+}
 
 
 
